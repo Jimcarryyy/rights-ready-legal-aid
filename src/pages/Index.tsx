@@ -1,26 +1,49 @@
 
+import { useState, useEffect } from 'react';
 import Header from '@/components/Header';
-import HeroSection from '@/components/HeroSection';
-import PracticeAreas from '@/components/PracticeAreas';
-import WhyChooseUs from '@/components/WhyChooseUs';
-import Testimonials from '@/components/Testimonials';
-import ContactForm from '@/components/ContactForm';
-import FAQ from '@/components/FAQ';
-import TrustIndicators from '@/components/TrustIndicators';
-import Footer from '@/components/Footer';
+import Hero from '@/components/Hero';
+import About from '@/components/About';
+import Education from '@/components/Education';
+import Projects from '@/components/Projects';
+import Skills from '@/components/Skills';
+import Contact from '@/components/Contact';
 
 const Index = () => {
+  const [darkMode, setDarkMode] = useState(false);
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      setDarkMode(savedTheme === 'dark');
+    } else {
+      setDarkMode(window.matchMedia('(prefers-color-scheme: dark)').matches);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('theme', darkMode ? 'dark' : 'light');
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [darkMode]);
+
+  const toggleTheme = () => {
+    setDarkMode(!darkMode);
+  };
+
   return (
-    <div className="min-h-screen">
-      <Header />
-      <HeroSection />
-      <TrustIndicators />
-      <PracticeAreas />
-      <WhyChooseUs />
-      <Testimonials />
-      <ContactForm />
-      <FAQ />
-      <Footer />
+    <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-300">
+      <Header darkMode={darkMode} toggleTheme={toggleTheme} />
+      <main>
+        <Hero />
+        <About />
+        <Education />
+        <Projects />
+        <Skills />
+        <Contact />
+      </main>
     </div>
   );
 };

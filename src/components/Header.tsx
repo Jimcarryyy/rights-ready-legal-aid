@@ -1,41 +1,112 @@
 
-import { Phone, Mail } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Moon, Sun, Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-const Header = () => {
+interface HeaderProps {
+  darkMode: boolean;
+  toggleTheme: () => void;
+}
+
+const Header = ({ darkMode, toggleTheme }: HeaderProps) => {
+  const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const navItems = [
+    { name: 'Home', href: '#home' },
+    { name: 'About', href: '#about' },
+    { name: 'Education', href: '#education' },
+    { name: 'Projects', href: '#projects' },
+    { name: 'Skills', href: '#skills' },
+    { name: 'Contact', href: '#contact' },
+  ];
+
+  const scrollToSection = (href: string) => {
+    const element = document.querySelector(href);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+    setMobileMenuOpen(false);
+  };
+
   return (
-    <header className="bg-slate-900 text-white py-4 sticky top-0 z-50 shadow-lg">
-      <div className="container mx-auto px-4">
+    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      scrolled ? 'bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-lg' : 'bg-transparent'
+    }`}>
+      <nav className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-6">
-            <div className="text-2xl font-bold text-amber-400">
-              LegalPartner
-            </div>
-            <nav className="hidden md:flex space-x-6">
-              <a href="#practice-areas" className="hover:text-amber-400 transition-colors">Practice Areas</a>
-              <a href="#about" className="hover:text-amber-400 transition-colors">About</a>
-              <a href="#testimonials" className="hover:text-amber-400 transition-colors">Testimonials</a>
-              <a href="#contact" className="hover:text-amber-400 transition-colors">Contact</a>
-            </nav>
+          <div className="text-2xl font-bold text-gray-900 dark:text-white">
+            Portfolio
           </div>
-          
-          <div className="flex items-center space-x-4">
-            <div className="hidden lg:flex items-center space-x-4 text-sm">
-              <div className="flex items-center space-x-1">
-                <Phone className="h-4 w-4" />
-                <span>(555) 123-LEGAL</span>
-              </div>
-              <div className="flex items-center space-x-1">
-                <Mail className="h-4 w-4" />
-                <span>info@legalpartner.com</span>
-              </div>
-            </div>
-            <Button className="bg-amber-500 hover:bg-amber-600 text-slate-900 font-semibold">
-              Free Consultation
+
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-8">
+            {navItems.map((item) => (
+              <button
+                key={item.name}
+                onClick={() => scrollToSection(item.href)}
+                className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
+              >
+                {item.name}
+              </button>
+            ))}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleTheme}
+              className="text-gray-700 dark:text-gray-300"
+            >
+              {darkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            </Button>
+          </div>
+
+          {/* Mobile Menu Button */}
+          <div className="md:hidden flex items-center space-x-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleTheme}
+              className="text-gray-700 dark:text-gray-300"
+            >
+              {darkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="text-gray-700 dark:text-gray-300"
+            >
+              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
           </div>
         </div>
-      </div>
+
+        {/* Mobile Navigation */}
+        {mobileMenuOpen && (
+          <div className="md:hidden absolute top-full left-0 right-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-lg">
+            <div className="flex flex-col space-y-4 p-4">
+              {navItems.map((item) => (
+                <button
+                  key={item.name}
+                  onClick={() => scrollToSection(item.href)}
+                  className="text-left text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
+                >
+                  {item.name}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+      </nav>
     </header>
   );
 };
