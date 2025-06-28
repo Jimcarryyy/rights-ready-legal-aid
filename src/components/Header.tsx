@@ -1,113 +1,173 @@
 
 import { useState, useEffect } from 'react';
-import { Moon, Sun, Menu, X } from 'lucide-react';
+import { Menu, X, Phone, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 
-interface HeaderProps {
-  darkMode: boolean;
-  toggleTheme: () => void;
-}
-
-const Header = ({ darkMode, toggleTheme }: HeaderProps) => {
-  const [scrolled, setScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+const Header = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
+      setIsScrolled(window.scrollY > 10);
     };
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navItems = [
-    { name: 'Home', href: '#home' },
-    { name: 'About', href: '#about' },
-    { name: 'Education', href: '#education' },
-    { name: 'Projects', href: '#projects' },
-    { name: 'Skills', href: '#skills' },
-    { name: 'Contact', href: '#contact' },
-  ];
-
-  const scrollToSection = (href: string) => {
-    const element = document.querySelector(href);
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
-    setMobileMenuOpen(false);
+    setIsMenuOpen(false);
   };
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      scrolled ? 'bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-lg' : 'bg-transparent'
-    }`}>
-      <nav className="container mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
-          <div className="text-2xl font-bold text-gray-900 dark:text-white">
-            Portfolio
-          </div>
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            {navItems.map((item) => (
-              <button
-                key={item.name}
-                onClick={() => scrollToSection(item.href)}
-                className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
-              >
-                {item.name}
-              </button>
-            ))}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleTheme}
-              className="text-gray-700 dark:text-gray-300"
-            >
-              {darkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-            </Button>
-          </div>
-
-          {/* Mobile Menu Button */}
-          <div className="md:hidden flex items-center space-x-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleTheme}
-              className="text-gray-700 dark:text-gray-300"
-            >
-              {darkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="text-gray-700 dark:text-gray-300"
-            >
-              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </Button>
-          </div>
-        </div>
-
-        {/* Mobile Navigation */}
-        {mobileMenuOpen && (
-          <div className="md:hidden absolute top-full left-0 right-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-lg">
-            <div className="flex flex-col space-y-4 p-4">
-              {navItems.map((item) => (
-                <button
-                  key={item.name}
-                  onClick={() => scrollToSection(item.href)}
-                  className="text-left text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
-                >
-                  {item.name}
-                </button>
-              ))}
+    <>
+      {/* Top Bar */}
+      <div className="bg-slate-900 text-white py-2 px-4 text-sm">
+        <div className="container mx-auto flex justify-between items-center">
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
+              <Phone className="h-4 w-4" />
+              <span>(555) 123-4567</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Mail className="h-4 w-4" />
+              <span>contact@lawfirm.com</span>
             </div>
           </div>
-        )}
-      </nav>
-    </header>
+          <div className="hidden md:block">
+            <span>Available 24/7 for Emergencies</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Header */}
+      <header className={`sticky top-0 z-50 transition-all duration-300 ${
+        isScrolled ? 'bg-white/95 backdrop-blur-md shadow-lg' : 'bg-white'
+      }`}>
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <div className="text-2xl font-bold text-slate-900">
+                LawFirm
+              </div>
+              <div className="text-sm text-gray-600">
+                Professional Legal Services
+              </div>
+            </div>
+
+            {/* Desktop Navigation */}
+            <nav className="hidden md:flex items-center space-x-8">
+              <button
+                onClick={() => scrollToSection('home')}
+                className="text-gray-700 hover:text-blue-600 transition-colors"
+              >
+                Home
+              </button>
+              <button
+                onClick={() => scrollToSection('practice-areas')}
+                className="text-gray-700 hover:text-blue-600 transition-colors"
+              >
+                Practice Areas
+              </button>
+              <button
+                onClick={() => scrollToSection('about')}
+                className="text-gray-700 hover:text-blue-600 transition-colors"
+              >
+                About Us
+              </button>
+              <button
+                onClick={() => scrollToSection('testimonials')}
+                className="text-gray-700 hover:text-blue-600 transition-colors"
+              >
+                Testimonials
+              </button>
+              <button
+                onClick={() => scrollToSection('contact')}
+                className="text-gray-700 hover:text-blue-600 transition-colors"
+              >
+                Contact
+              </button>
+              <Link
+                to="/portfolio"
+                className="text-gray-700 hover:text-blue-600 transition-colors"
+              >
+                Portfolio →
+              </Link>
+              <Button
+                onClick={() => scrollToSection('contact')}
+                className="bg-blue-600 hover:bg-blue-700 text-white"
+              >
+                Free Consultation
+              </Button>
+            </nav>
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="md:hidden text-gray-700"
+            >
+              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
+          </div>
+
+          {/* Mobile Navigation */}
+          {isMenuOpen && (
+            <div className="md:hidden mt-4 pb-4 border-t border-gray-200">
+              <nav className="flex flex-col space-y-4 pt-4">
+                <button
+                  onClick={() => scrollToSection('home')}
+                  className="text-left text-gray-700 hover:text-blue-600 transition-colors"
+                >
+                  Home
+                </button>
+                <button
+                  onClick={() => scrollToSection('practice-areas')}
+                  className="text-left text-gray-700 hover:text-blue-600 transition-colors"
+                >
+                  Practice Areas
+                </button>
+                <button
+                  onClick={() => scrollToSection('about')}
+                  className="text-left text-gray-700 hover:text-blue-600 transition-colors"
+                >
+                  About Us
+                </button>
+                <button
+                  onClick={() => scrollToSection('testimonials')}
+                  className="text-left text-gray-700 hover:text-blue-600 transition-colors"
+                >
+                  Testimonials
+                </button>
+                <button
+                  onClick={() => scrollToSection('contact')}
+                  className="text-left text-gray-700 hover:text-blue-600 transition-colors"
+                >
+                  Contact
+                </button>
+                <Link
+                  to="/portfolio"
+                  className="text-left text-gray-700 hover:text-blue-600 transition-colors"
+                >
+                  Portfolio →
+                </Link>
+                <Button
+                  onClick={() => scrollToSection('contact')}
+                  className="bg-blue-600 hover:bg-blue-700 text-white w-full"
+                >
+                  Free Consultation
+                </Button>
+              </nav>
+            </div>
+          )}
+        </div>
+      </header>
+    </>
   );
 };
 
