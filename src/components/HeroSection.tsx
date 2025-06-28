@@ -37,7 +37,7 @@ const HeroSection = () => {
             <Button size="lg" className="bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold text-lg px-8 py-4">
               Get Your Free Consultation
             </Button>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-slate-900 font-semibold text-lg px-8 py-4">
+            <Button size="lg" variant="outline" className="border-white text-black hover:bg-white hover:text-slate-900 font-semibold text-lg px-8 py-4">
               Call (555) 123-LEGAL
             </Button>
           </div>
